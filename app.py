@@ -24,25 +24,14 @@ with st.sidebar:
     
     **Problem:**
     Reading large documents (research papers, legal files, technical manuals) is time-consuming. Traditional tools lack deep comprehension and logical reasoning.
-    
-    **What This App Does:**
-    - Reads and understands user-uploaded documents (PDF/TXT)
-    - Answers questions that require comprehension and inference
-    - Poses logic-based questions and evaluates your answers
-    - Justifies every answer with a reference from the document
-    
-    **Features:**
-    1. **Document Upload**
-       - Upload PDF, DOCX & TXT files (e.g., reports, research papers)
-    2. **Interaction Modes**
-       - **Ask Anything:** Free-form Q&A with contextual, document-grounded answers
-       - **Challenge Me:** Get logic/comprehension questions, answer them, and receive feedback with justifications
-    3. **Contextual Understanding**
-       - All answers are grounded in the uploaded content
-       - No hallucinations or fabricated responses
-       - Every answer includes a brief justification (e.g., "Supported by paragraph 3 of section 1...")
-    4. **Auto Summary**
-       - After upload, get a concise summary (≤ 150 words) of your document
+        
+    **How to use this assistant:**
+    1. Upload your document(s) using the uploader below.
+    2. After upload, a summary of your document will be displayed.
+    3. Choose an interaction mode:
+       - **Ask Anything:** Type any question about your document and get a grounded, referenced answer.
+       - **Challenge Me:** Receive logic/comprehension questions based on your document, answer them, and get feedback.
+    4. You can switch between modes at any time using the buttons provided.
     """)
     st.markdown("---")
     st.subheader("🔧 System Status")
