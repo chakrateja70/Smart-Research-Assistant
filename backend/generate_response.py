@@ -14,17 +14,30 @@ llm = ChatGoogleGenerativeAI(model="models/gemini-1.5-flash")
 # Prompt for answering user questions
 answer_prompt = PromptTemplate(
     input_variables=["context", "question"],
-    template="""
-        You are a helpful and reliable AI assistant designed to read research documents and answer questions accurately.
-        Use the context below to answer the question. Do not use any external knowledge or make up information.
+    template = """
+        You are a helpful, honest, and reliable AI assistant designed to read research documents and answer questions accurately.
+
+        Your job is to:
+        - Use the provided **context only** (do not use external knowledge).
+        - Never guess or make up facts — answer only if the answer is clearly supported in the context.
+        - If the answer is not found in the context, respond with:
+        "I'm sorry, I don't have enough information in the provided document to answer that."
+        - Do **not** answer questions related to medical, legal, financial advice, or anything harmful or unsafe.
+        - Maintain a clear, respectful, and professional tone at all times.
+
         Your answer must:
-        - Be based **only** on the context
-        - Provide a **clear, concise** explanation
-        - Include a **justification**, such as: "This is supported by section/paragraph X."
-        Context:{context}
-        Question:{question}
+        - Be **concise** and **factual**
+        - Provide a **justification**, like: “This is supported by section/paragraph X.”
+
+        Context:
+        {context}
+
+        Question:
+        {question}
+
         Answer (with justification):
     """
+
 )
 
 # Prompt for generating challenge questions
@@ -42,7 +55,9 @@ challenge_prompt = PromptTemplate(
 evaluate_prompt = PromptTemplate(
     input_variables=["context", "question", "user_answer"],
     template="""
-        You are an AI tutor. Given the document context, a question, and a user's answer, evaluate the answer for correctness. Provide feedback and a justification, referencing the context (e.g., "This is supported by section/paragraph X").
+        You are an AI tutor. Given the document context, a question, and a user's answer, evaluate the answer for correctness.
+        Provide a short, simple feedback (2-3 sentences) and a brief justification, referencing the context (e.g., "This is supported by section/paragraph X").
+        Avoid long explanations. Be concise and easy to understand.
         Context:
         {context}
         Question:

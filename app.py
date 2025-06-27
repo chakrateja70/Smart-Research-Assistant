@@ -33,7 +33,7 @@ with st.sidebar:
     
     **Features:**
     1. **Document Upload**
-       - Upload PDF or TXT files (e.g., reports, research papers)
+       - Upload PDF, DOCX & TXT files (e.g., reports, research papers)
     2. **Interaction Modes**
        - **Ask Anything:** Free-form Q&A with contextual, document-grounded answers
        - **Challenge Me:** Get logic/comprehension questions, answer them, and receive feedback with justifications
@@ -135,7 +135,7 @@ if st.session_state.get("processing_success") and st.session_state.get("document
     st.markdown(
         """
         <div style='background-color: #222; border-radius: 8px; padding: 1em; margin-bottom: 1em; border: 1px solid #444;'>
-        <b>📝 Document Summary (≤ 150 words):</b><br>
+        <b>📝 Document Summary:</b><br>
         <span style='color: #ccc;'>""" + st.session_state["document_summary"] + "</span></div>", unsafe_allow_html=True
     )
 
