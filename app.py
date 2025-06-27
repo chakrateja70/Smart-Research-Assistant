@@ -6,7 +6,7 @@ backend_path = os.path.join(os.path.dirname(__file__), 'backend')
 sys.path.append(backend_path)
 
 from backend.upload import process_uploaded_files
-from backend.generate_response import answer_question, generate_challenge_questions, evaluate_answer, generate_summary
+from backend.generate_response import answer_question, generate_challenge_questions, evaluate_answer, generate_summary, evaluate_challenge_response
 from backend.utils import load_documents
 
 st.set_page_config(
@@ -204,22 +204,33 @@ with interaction_col2:
             )
         if st.button("Submit Answers", key="submit_challenge_btn"):
             st.session_state.challenge_feedback = []
+            st.session_state.challenge_justification = []
+            st.session_state.challenge_score = []
             for i, q in enumerate(st.session_state.challenge_questions):
                 user_ans = st.session_state.challenge_answers[i]
                 with st.spinner(f"Evaluating Q{i+1}..."):
-                    feedback = evaluate_answer(q, user_ans)
-                st.session_state.challenge_feedback.append(feedback)
+                    result = evaluate_challenge_response(q, user_ans)
+                st.session_state.challenge_feedback.append(result["feedback"])
+                st.session_state.challenge_justification.append(result["justification"])
+                st.session_state.challenge_score.append(result["score"])
         # Show feedback if available
         if any(st.session_state.get("challenge_feedback", [])):
             st.markdown("---")
             st.markdown("**Feedback:**")
-            for i, feedback in enumerate(st.session_state.get("challenge_feedback", [])):
+            for i in range(len(st.session_state.get("challenge_feedback", []))):
+                feedback = st.session_state.challenge_feedback[i]
+                justification = st.session_state.challenge_justification[i]
+                score = st.session_state.challenge_score[i]
                 if feedback:
                     st.markdown(f"**Q{i+1} Feedback:** {feedback}")
+                    st.markdown(f"**Justification:** {justification}")
+                    st.markdown(f"**Similarity Score:** {score} / 100")
         if st.button("🔄 New Challenge", key="new_challenge_btn"):
             del st.session_state["challenge_questions"]
             del st.session_state["challenge_answers"]
             del st.session_state["challenge_feedback"]
+            del st.session_state["challenge_justification"]
+            del st.session_state["challenge_score"]
             st.rerun()
     else:
         st.info("Click 'Activate Challenge Me' to use this mode.")

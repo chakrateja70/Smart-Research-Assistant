@@ -4,6 +4,8 @@ from utils import retreive_relavant_chunks
 import google.generativeai as genai
 from typing import List
 import os
+import re
+from difflib import SequenceMatcher
 
 # Configure API key (should be set via environment variable in production)
 genai.configure(api_key=os.environ.get("GOOGLE_API_KEY"))
@@ -87,9 +89,16 @@ def answer_question(query: str) -> dict:
         "context": context,
         "question": query
     })
+    answer_text = response.content.strip()
+    # Post-processing: check for justification
+    justification_patterns = [
+        r"section[\s\w\d]*[\.:]", r"paragraph[\s\w\d]*[\.:]", r"quote[\s\w\d]*[\.:]", r"supported by", r"according to", r"as stated in"
+    ]
+    if not any(re.search(pattern, answer_text, re.IGNORECASE) for pattern in justification_patterns):
+        answer_text += "\n\nNote: The answer could not be verified with a document-based justification."
     # Collect unique source filenames from metadata
     sources = list({doc.metadata.get('source') for doc in results if doc.metadata.get('source')})
-    return {"answer": response.content, "sources": sources}
+    return {"answer": answer_text, "sources": sources}
 
 
 def generate_challenge_questions() -> List[str]:
@@ -126,6 +135,33 @@ def evaluate_answer(question: str, user_answer: str) -> str:
         "user_answer": user_answer
     })
     return response.content  # Only display the feedback content
+
+def compute_similarity_score(user_answer: str, actual_answer: str) -> int:
+    """Compute a similarity score (0-100) between user and actual answer."""
+    matcher = SequenceMatcher(None, user_answer.lower(), actual_answer.lower())
+    return int(matcher.ratio() * 100)
+
+def evaluate_challenge_response(question: str, user_answer: str) -> dict:
+    """
+    Evaluate user answer, provide feedback, justification, and a similarity score.
+    """
+    # Get actual answer from LLM
+    results = retreive_relavant_chunks(query=question, top_k=5)
+    context = "\n".join([doc.page_content for doc in results])
+    chain = answer_prompt | llm
+    actual_response = chain.invoke({
+        "context": context,
+        "question": question
+    }).content.strip()
+    # Evaluate user answer
+    feedback = evaluate_answer(question, user_answer)
+    # Compute similarity score
+    score = compute_similarity_score(user_answer, actual_response)
+    return {
+        "feedback": feedback,
+        "justification": actual_response,
+        "score": score
+    }
 
 def generate_summary(context: str) -> str:
     chain = summary_prompt | llm
