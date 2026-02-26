@@ -5,13 +5,13 @@ from typing import List
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-from utils import (
+from .utils import (
     load_documents,
     split_chunks,
     convert_to_embeddings,
     add_embeddings_to_pinecone,
 )
-from config.pinecone import pinecone_connection
+from .config.pinecone import pinecone_connection
 
 
 def process_uploaded_files(uploaded_files) -> dict:

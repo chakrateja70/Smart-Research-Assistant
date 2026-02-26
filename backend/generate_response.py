@@ -1,7 +1,7 @@
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.prompts import PromptTemplate
-from utils import retreive_relavant_chunks
-import google.generativeai as genai
+from .utils import retreive_relavant_chunks
+import google.genai as genai
 from typing import List
 import os
 import re
