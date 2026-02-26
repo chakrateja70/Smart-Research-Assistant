@@ -1,16 +1,13 @@
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.prompts import PromptTemplate
 from .utils import retreive_relavant_chunks
-import google.genai as genai
 from typing import List
 import os
 import re
 from difflib import SequenceMatcher
 
-# Configure API key (should be set via environment variable in production)
-genai.configure(api_key=os.environ.get("GOOGLE_API_KEY"))
-
 # Initialize Gemini LLM
+# API key is automatically read from GOOGLE_API_KEY environment variable
 llm = ChatGoogleGenerativeAI(model="models/gemini-1.5-flash")
 
 # Prompt for answering user questions
