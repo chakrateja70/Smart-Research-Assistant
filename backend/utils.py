@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-# Updated imports in backend/utils.py
-=======
 from typing import List, Dict, Any
 from langchain_core.documents import Document
 from langchain_community.document_loaders import PyPDFLoader, Docx2txtLoader, TextLoader
@@ -151,9 +148,3 @@ def retreive_relavant_chunks(query: str, top_k: int = 8) -> List[Document]:
     except Exception as e:
         print(f"Error retrieving relevant chunks: {e}")
         return []
->>>>>>> 4eba6e5 (Refactor import statements to use relative paths for consistency)
-
-# Original line
-# from config.pinecone import index
-# Updated line
-from backend.config.pinecone import index
